@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const sampleTodos = [
+const SAMPLE_TODOS = [
   { id: 1, text: "Buy milk", completed: false },
   { id: 2, text: "Clean the house", completed: false },
   { id: 3, text: "Go for a run", completed: false },
@@ -14,24 +14,27 @@ const sampleTodos = [
 ];
 
 const TodoList = () => {
-  const [todos, setTodos] = useState(sampleTodos);
+  const [todos, setTodos] = useState(SAMPLE_TODOS);
+  const [newTodo, setNewTodo] = useState("");
 
-  const [todo, setTodo] = useState([]);
-
-  const handleChange = (event) => {
-    console.log(event.target.value);
-    setTodo(event.target.value);
-  };
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    if (!todo.trim()) {
+    if (!newTodo.trim()) {
       return;
     }
 
-    setTodos([{ id: crypto.randomUUID(), text: todo }, ...todos]);
-    setTodo("");
+    setTodos([
+      { id: crypto.randomUUID(), text: newTodo, completed: false },
+      ...todos,
+    ]);
+    setNewTodo("");
   };
+
+  const handleInputChange = (event) => {
+    setNewTodo(event.target.value);
+  };
+
   const toggleCompleted = (id) => {
     const updatedTodos = todos.map((todo) => {
       if (todo.id === id) {
@@ -46,16 +49,26 @@ const TodoList = () => {
     });
     setTodos(updatedTodos);
   };
+
+  const handleDelete = (id) => {
+    const filteredTodos = todos.filter((todo) => {
+      if (todo.id === id) {
+        return false;
+      }
+      return true;
+    });
+    setTodos(filteredTodos);
+  };
   return (
     <div>
       <form onSubmit={handleSubmit}>
         <input
           type="text"
-          placeholder="todo를 입력해주세요"
-          onChange={handleChange}
-          value={todo}
+          name="todo"
+          onChange={handleInputChange}
+          value={newTodo}
         />
-        <button>추가하기</button>
+        <button type="submit">추가하기</button>
       </form>
       <ul>
         {todos.map((todo) => (
@@ -63,13 +76,8 @@ const TodoList = () => {
             <p>
               {todo.text} - {String(todo.completed)}
             </p>
-            <button
-              onClick={() =>
-                toggleCompleted(todo.id, todo.text, todo.completed)
-              }
-            >
-              완료
-            </button>
+            <button onClick={() => toggleCompleted(todo.id)}>완료</button>
+            <button onClick={() => handleDelete(todo.id)}>삭제</button>
           </li>
         ))}
       </ul>
