@@ -74,7 +74,7 @@ const TodoList = () => {
         {todos.map((todo) => (
           <li key={todo.id}>
             <p>
-              {todo.text} - {String(todo.completed)}
+              {todo.text} - {todo.completed ? "완료됨" : "진행중"}
             </p>
             <button onClick={() => toggleCompleted(todo.id)}>완료</button>
             <button onClick={() => handleDelete(todo.id)}>삭제</button>
@@ -85,5 +85,3 @@ const TodoList = () => {
   );
 };
 export default TodoList;
-
-// 업데이트 togg
